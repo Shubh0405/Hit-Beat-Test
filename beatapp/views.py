@@ -16,9 +16,15 @@ def UserDetails(request):
             email = request.data['email']
             try:
                 user = UserData.objects.get(email=email)
+                User_response = {
+                    'error': 'User already exists!'
+                }
             except:
                 serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+                User_response = {
+                    'data' : serializer.data
+                }
+            return Response(User_response, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
@@ -58,7 +64,10 @@ def UserAudioPost(request):
             print(score)
             previous_score.user_score = score
             previous_score.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            Score_response = {
+                'score': score
+            }
+            return Response(Score_response, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
