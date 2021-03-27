@@ -16,16 +16,13 @@ def UserDetails(request):
             email = request.data['email']
             try:
                 user = UserData.objects.get(email=email)
-                User_response = {
-                    'error': 'User already exists!'
-                }
             except:
                 serializer.save()
-                User_response = {
-                    'data' : serializer.data
-                }
-            return Response(User_response, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            if ('already' in serializer.errors['email'][0]) or ('already' in serializer.errors['id'][0]):
+                return Response({'error':'User Already Exists!'}, status = status.HTTP_200_OK)
+            return Response(serializer.errors['email'], status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def UserGetDetails(request,pk):

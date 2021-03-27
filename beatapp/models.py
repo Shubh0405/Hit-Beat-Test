@@ -20,10 +20,20 @@ class BeatSound(models.Model):
         return self.title
 
 class UserSound(models.Model):
-    user = models.ForeignKey(UserData,on_delete=models.CASCADE)
+    user = models.ForeignKey(UserData,on_delete=models.CASCADE,related_name="user_sound")
     beat_audio = models.ForeignKey(BeatSound,on_delete=models.CASCADE)
     user_audio = models.FileField(upload_to ='user_audios')
     user_score = models.FloatField()
 
     def __str__(self):
         return self.user.name + ' try ' + self.beat_audio.title
+
+class UserFavourite(models.Model):
+    user = models.ForeignKey(UserData,on_delete=models.CASCADE,related_name="user_favourite")
+    beat = models.ForeignKey(BeatSound,on_delete=models.CASCADE,related_name="beat_favourite")
+
+    class Meta:
+        unique_together = ('user','beat')
+
+    def __str__(self):
+        return self.beat + ' starred by ' + self.user
